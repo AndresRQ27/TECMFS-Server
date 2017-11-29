@@ -1,6 +1,6 @@
-#include <iostream>
+#include "TCPServer.h"
 
-int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+int main(){
+    TCPServer s;
+    s.start();
 }
