@@ -52,16 +52,6 @@ string ControllerNode::xorCalc(string disk1, string disk2){
     return returnString;
 }
 
-void ControllerNode::sendVideoData(int identifier){    //Devulve la información contenida en todos los bloques del stripe
-    const char* StripeData;
-    for (int currentDiskNumber = 0; currentDiskNumber < cantDisks; currentDiskNumber++){
-        const char* blockData = getDataFromBlock(currentDiskNumber, identifier);
-        if (blockData == ""){       //Cuando se reciba vacío, significa que no hay datos en los siguientes bloques
-
-        }
-    }
-}
-
 string ControllerNode::restoreWithParity(int missingDiskNumber, vector<const char*> allDisks){
     string savedParity = this->parity;
     string parityWithoutMissingDisk = "";       //Después se va usar para comparar con el savedParity
