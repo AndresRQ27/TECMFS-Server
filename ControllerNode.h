@@ -15,14 +15,16 @@ public:
 
     string parity;              //Se usa para guardar paridad y calcular los discos
     vector<int> disksStorageUsed;   //Tamaño en bits del espacio ocupado en el disco
-    json database;
-
+    vector<vector<string>> database = NULL;
 
     string calcParity(vector<const char*> diskSumsList);    //Calcula la paridad entre todos los discos
     string xorCalc(string disk1, string disk2);
 
+    //Para guardar en los discos
+    void saveToDisk(json sendData, int videoNumber);
+
     //Para enviar videos a la aplicación de prueba
-    void sendVideoData(int stripeNumber);          //Devuelve la información contenida en todos los bloques que contienen un video
+    void sendVideoData(int identifier);          //Devuelve la información contenida en todos los bloques que contienen un video
     const char* getDataFromBlock(int diskNumber, int stripeNumber);  //Devuelve los datos binarios de un bloque específico
 
     string restoreWithParity(int missingDiskNumber, vector<const char*> allDisks);      //Da el valor en binario del vector del disco

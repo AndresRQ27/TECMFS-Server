@@ -5,7 +5,7 @@ void TCPServer::start(const int PORT)
     int master_socket , addrlen , new_socket , client_socket[MAX_CLIENTS] ,activity, i , valread , sd;
     int max_sd;
     struct sockaddr_in address;
-    char* buffer=new char[800000000];  //data buffer
+    char* buffer=new char[1024];  //data buffer
     fd_set readfds; //set of socket descriptors
 
 

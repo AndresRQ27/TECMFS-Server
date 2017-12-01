@@ -1,15 +1,5 @@
 #include "ControllerNode.h"
 
-void ControllerNode::sendVideoData(int stripeNumber){    //Devulve la información contenida en todos los bloques del stripe
-    const char* StripeData;
-    for (int currentDiskNumber = 0; currentDiskNumber < cantDisks; currentDiskNumber++){
-        const char* blockData = getDataFromBlock(currentDiskNumber,stripeNumber);
-        if (blockData == ""){       //Cuando se reciba vacío, significa que no hay datos en los siguientes bloques
-
-        }
-    }
-}
-
 string ControllerNode::calcParity(vector<const char*> diskSumsList){
     string finalParity = diskSumsList[0];      //Primero se usa el vector de primer disco
     for (int disk = 1; disk < diskSumsList.size(); disk++){
@@ -62,10 +52,10 @@ string ControllerNode::xorCalc(string disk1, string disk2){
     return returnString;
 }
 
-void ControllerNode::sendVideoData(int stripeNumber){    //Devulve la información contenida en todos los bloques del stripe
+void ControllerNode::sendVideoData(int identifier){    //Devulve la información contenida en todos los bloques del stripe
     const char* StripeData;
     for (int currentDiskNumber = 0; currentDiskNumber < cantDisks; currentDiskNumber++){
-        const char* blockData = getDataFromBlock(currentDiskNumber,stripeNumber);
+        const char* blockData = getDataFromBlock(currentDiskNumber, identifier);
         if (blockData == ""){       //Cuando se reciba vacío, significa que no hay datos en los siguientes bloques
 
         }
@@ -103,4 +93,18 @@ string ControllerNode::restoreWithParity(int missingDiskNumber, vector<const cha
 
 const char* ControllerNode::getDataFromBlock(int diskNumber, int stripeNumber){
 
+}
+
+void ControllerNode::saveToDisk(json sendData, int videoNumber){
+    //Se guarda en el Controller un "catálogo"
+    if (database.size() == videoNumber){    //Si no espacio para la información de un video, se crea
+        vector<string> videoInfo;
+        database.push_back(videoInfo);
+        database[videoNumber] = {sendData["metadata"], sendData["identifier"]}; //Primero se agrega el título y el primer bloque
+    }
+    if (database.size() == videoNumber+1){  //Si ya está el espacio para la información de un video
+        database[videoNumber].push_back(sendData["identifier"]);    //Sólo se agrega el siguiente bloque que va a tener parte del video
+    }
+
+    ///send
 }
