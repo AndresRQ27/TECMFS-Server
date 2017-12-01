@@ -22,6 +22,7 @@
 #include <sys/time.h>
 #include <iostream>
 #include "json.hpp"
+#include "handy_functions.h"
 
 using json = nlohmann::json;
 

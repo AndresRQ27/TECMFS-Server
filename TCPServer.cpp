@@ -5,7 +5,7 @@ void TCPServer::start(const int PORT)
     int master_socket , addrlen , new_socket , client_socket[MAX_CLIENTS] ,activity, i , valread , sd;
     int max_sd;
     struct sockaddr_in address;
-    char buffer[BUFFER_SIZE];  //data buffer
+    char* buffer=new char[800000000];  //data buffer
     fd_set readfds; //set of socket descriptors
 
 
@@ -39,7 +39,7 @@ void TCPServer::start(const int PORT)
             {
                 //Check if it was for closing , and also read the
                 //incoming message
-                valread = read( sd , buffer, BUFFER_SIZE);//se llena el buffer del mensaje que mandó el usuario
+                valread = read( sd , buffer, 800000000);//se llena el buffer del mensaje que mandó el usuario
                 if (valread == 0) {
                     disconnectClient(sd, address, addrlen, client_socket, i);
                 }
@@ -106,7 +106,7 @@ void TCPServer::initialize(int *client_socket, int &master_socket, int &opt, soc
         exit(EXIT_FAILURE);
     }
 
-    //accept the incoming connection
+    //accept the incoming connectihady_functionson
     addrlen = sizeof(address);
     puts("Waiting for connections ...");
 }
@@ -190,6 +190,11 @@ std::string TCPServer::bufferToString(char *buffer) {
 }
 
 void TCPServer::ParseIncomingMessage(std::string message,int i,int sd){
+    std::cout<<message;
+    json j = json::parse(message);
+    if(j["command"]=="C"){
+            handy_functions::Write(handy_functions::binaryToVideo(j["data"]),"prueba",".mp4");
+    }
     /*//std::cout<<message<<std::endl;
     json j = json::parse(message);
     if(j["command"]=="n"){
