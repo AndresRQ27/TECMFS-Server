@@ -1,14 +1,5 @@
-//
-// Created by sebas97012 on 10/12/17.
-//
-
 #ifndef UNTITLED_TCPSERVER_H
 #define UNTITLED_TCPSERVER_H
-
-
-//
-// Created by sebas97012 on 10/12/17.
-//
 
 #include <stdio.h>
 #include <string.h>   //strlen
