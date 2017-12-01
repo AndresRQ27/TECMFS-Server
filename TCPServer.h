@@ -1,5 +1,14 @@
+//
+// Created by sebas97012 on 10/12/17.
+//
+
 #ifndef UNTITLED_TCPSERVER_H
 #define UNTITLED_TCPSERVER_H
+
+
+//
+// Created by sebas97012 on 10/12/17.
+//
 
 #include <stdio.h>
 #include <string.h>   //strlen
@@ -18,20 +27,18 @@ using json = nlohmann::json;
 
 #define TRUE   1
 #define FALSE  0
-#define PORT 8888
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 8100000 //8.1MB
 #define MAX_CLIENTS 30
 
-class TCPServer{
+
+class TCPServer {
 public:
-    void initialize(int* client_socket, int& master_socket, int& opt,sockaddr_in& address,int& addrlen);
+    void initialize(int* client_socket, int& master_socket, int& opt,sockaddr_in& address,int& addrlen,int PORT);
     void checkForChilds(fd_set* readfds,int& max_sd,int& master_socket,int& sd,int* client_socket);
     void acceptConnection(int& new_socket,int& master_socket,sockaddr_in& address,int& addrlen,int* client_socket);
     void disconnectClient(int& sd,sockaddr_in& address, int& addrlen,int* client_socket, int i);
-    std::string bufferToString(char* buffer);
-    void start();
-    //rmMap<int,std::string>* clients_maps[MAX_CLIENTS];
-    int number_of_clients,total_var,memory_used;
+    std::string bufferToString(char * buffer);
+    void start(int PORT);
     void ParseIncomingMessage(std::string message,int i,int sd);
 };
 

@@ -1,6 +1,5 @@
 #include "TCPServer.h"
-
-void TCPServer::start()
+void TCPServer::start(const int PORT)
 {
     int opt = TRUE;
     int master_socket , addrlen , new_socket , client_socket[MAX_CLIENTS] ,activity, i , valread , sd;
@@ -11,7 +10,7 @@ void TCPServer::start()
 
 
 
-    initialize(client_socket,master_socket,opt,address,addrlen);
+    initialize(client_socket,master_socket,opt,address,addrlen,PORT);
 
     while(TRUE)
     {
@@ -61,16 +60,14 @@ void TCPServer::start()
 
 
 
-void TCPServer::initialize(int *client_socket, int &master_socket, int &opt, sockaddr_in &address, int &addrlen) {
+void TCPServer::initialize(int *client_socket, int &master_socket, int &opt, sockaddr_in &address, int &addrlen, const int PORT) {
     //set of socket descriptors
     fd_set readfds;
 
     //initialise all client_socket[] to 0 so not checked
-    for (int i = 0; i < MAX_CLIENTS; i++){
+    for (int i = 0; i < MAX_CLIENTS; i++)
+    {
         client_socket[i] = 0;
-        total_var=0;
-        number_of_clients=0;
-        memory_used=0;
     }
 
     //create a master socket
@@ -169,7 +166,6 @@ void TCPServer::acceptConnection(int &new_socket, int &master_socket, sockaddr_i
         {
             client_socket[i] = new_socket;
             printf("Adding to list of sockets as %d\n" , i);
-            number_of_clients++;
             break;
         }
     }
@@ -187,7 +183,6 @@ void TCPServer::disconnectClient(int &sd, sockaddr_in &address, int &addrlen, in
     //Close the socket and mark as 0 in list for reuse
     close( sd );
     client_socket[i] = 0;
-    number_of_clients--;
 }
 
 std::string TCPServer::bufferToString(char *buffer) {
@@ -195,5 +190,33 @@ std::string TCPServer::bufferToString(char *buffer) {
 }
 
 void TCPServer::ParseIncomingMessage(std::string message,int i,int sd){
+    /*//std::cout<<message<<std::endl;
+    json j = json::parse(message);
+    if(j["command"]=="n"){
+        total_var++;
+        memory_used+= sizeof(j["data"]);
+    }
+    else if(j["command"]=="g"){
+        RMnode<int,std::__cxx11::string> node = *clients_maps[i]->search(j["key"]);
+        std::string s = node.data;
+        send(sd , s.c_str() , BUFFER_SIZE , 0 );
+        usleep(200);
+    }
+    else if(j["command"]=="d"){
+        if(clients_maps[i]->search(j["key"])!= nullptr){
+        int varsize=sizeof(clients_maps[i]->search(j["key"])->data)/2;
+        if(clients_maps[i]->deleteNode(j["key"])){
+            memory_used-=varsize;
+            total_var--;}
+    }}
+    else if(j["command"]=="m"){
+        json j1;
+        j1["clients"]=number_of_clients;
+        j1["variables"]=total_var;
+        j1["used_mem"]=memory_used;
+        send(sd , j1.dump().c_str() , BUFFER_SIZE , 0 );
+        usleep(200);
+    }
 
+    *///std::cout<<number_of_clients<<std::endl<<total_var<<std::endl<<memory_used<<std::endl;
 }
