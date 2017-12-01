@@ -5,13 +5,12 @@ void TCPServer::start(const int PORT)
     int master_socket , addrlen , new_socket , client_socket[MAX_CLIENTS] ,activity, i , valread , sd;
     int max_sd;
     struct sockaddr_in address;
-    char* buffer=new char[800000000];  //data buffer
+    char buffer[BUFFER_SIZE];  //data buffer
     fd_set readfds; //set of socket descriptors
 
 
-
     initialize(client_socket,master_socket,opt,address,addrlen,PORT);
-
+    std::vector<std::string>* data = new std::vector<std::string>();
     while(TRUE)
     {
         checkForChilds(&readfds,max_sd,master_socket,sd,client_socket);
@@ -39,7 +38,7 @@ void TCPServer::start(const int PORT)
             {
                 //Check if it was for closing , and also read the
                 //incoming message
-                valread = read( sd , buffer, 800000000);//se llena el buffer del mensaje que mandó el usuario
+                valread = read( sd , buffer, BUFFER_SIZE);//se llena el buffer del mensaje que mandó el usuario
                 if (valread == 0) {
                     disconnectClient(sd, address, addrlen, client_socket, i);
                 }
@@ -50,7 +49,7 @@ void TCPServer::start(const int PORT)
                     //of the data read
                     //AQUI PASA LA MAGIA(es donde se leen los mensajes entrantes)
                     buffer[valread] = '\0';
-                    ParseIncomingMessage(bufferToString(buffer),i,sd);
+                    ParseIncomingMessage(bufferToString(buffer),i,sd,data);
                 }
             }
         }
@@ -189,24 +188,32 @@ std::string TCPServer::bufferToString(char *buffer) {
     return std::__cxx11::string(buffer);
 }
 
-void TCPServer::ParseIncomingMessage(std::string message,int i,int sd){
-    std::cout<<message;
+void TCPServer::ParseIncomingMessage(std::string message,int i,int sd,std::vector<std::string> *data){
+    std::cout<<message<<std::endl;
+    int parts;
     json j = json::parse(message);
     if(j["command"]=="C"){
-            handy_functions::Write(handy_functions::binaryToVideo(j["data"]),"prueba",".mp4");
+            parts=j["parts"];
     }
+    if(j["command"]=="C1"){
+        data->push_back(j["data"]);
+        parts--;
+    }
+    if(parts==0){
+        //handy_functions::Write(handy_functions::binaryToVideo(data),"prueba",".mp4");
+        ;}
     /*//std::cout<<message<<std::endl;
     json j = json::parse(message);
     if(j["command"]=="n"){
         total_var++;
         memory_used+= sizeof(j["data"]);
     }
-    else if(j["command"]=="g"){
-        RMnode<int,std::__cxx11::string> node = *clients_maps[i]->search(j["key"]);
-        std::string s = node.data;
+    */else if(j["command"]=="G"){
+        std::string s = "HOLA";
         send(sd , s.c_str() , BUFFER_SIZE , 0 );
         usleep(200);
-    }
+        std::cout<<"ENVIADO"<<std::endl;
+    }/*
     else if(j["command"]=="d"){
         if(clients_maps[i]->search(j["key"])!= nullptr){
         int varsize=sizeof(clients_maps[i]->search(j["key"])->data)/2;
@@ -223,5 +230,5 @@ void TCPServer::ParseIncomingMessage(std::string message,int i,int sd){
         usleep(200);
     }
 
-    *///std::cout<<number_of_clients<<std::endl<<total_var<<std::endl<<memory_used<<std::endl;
+    *///std::cout<<number_of_clients<<std::endl<<total_var<<std::endl<<memory_used<<std::endl;*/
 }

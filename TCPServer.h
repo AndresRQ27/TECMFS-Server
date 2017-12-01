@@ -19,7 +19,7 @@ using json = nlohmann::json;
 
 #define TRUE   1
 #define FALSE  0
-#define BUFFER_SIZE 8100000 //8.1MB
+#define BUFFER_SIZE 1024 //8.1MB
 #define MAX_CLIENTS 30
 
 
@@ -31,7 +31,7 @@ public:
     void disconnectClient(int& sd,sockaddr_in& address, int& addrlen,int* client_socket, int i);
     std::string bufferToString(char * buffer);
     void start(int PORT);
-    void ParseIncomingMessage(std::string message,int i,int sd);
+    void ParseIncomingMessage(std::string message,int i,int sd,std::vector<std::string> *data);
 };
 
 #endif //UNTITLED_TCPSERVER_H
